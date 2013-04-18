@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <My_Reports>
+            <active>true</active>
+            <version>0.1.0</version>
+            <codePool>local</codePool>
+        </My_Reports>
+    </modules>
+</config>
