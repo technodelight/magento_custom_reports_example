@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <adminhtml_my_reports_index>
+        <reference name="content">
+            <block type="my_reports/adminhtml_report" template="report/grid/container.phtml" name="my_reports_report_grid_container">
+                <block type="my_reports/adminhtml_filter_form" name="grid.filter.form" />
+            </block>
+        </reference>
+    </adminhtml_my_reports_index>
+</layout>

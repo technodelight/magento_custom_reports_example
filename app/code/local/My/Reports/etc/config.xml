@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <My_Reports>
+            <version>0.1.0</version>
+            <depends>
+                <Mage_Adminhtml />
+                <Mage_Sales />
+            </depends>
+        </My_Reports>
+    </modules>
+
+    <global>
+        <models>
+            <my_reports>
+                <class>My_Reports_Model</class>
+                <resourceModel>my_reports_mysql4</resourceModel>
+            </my_reports>
+            <my_reports_mysql4>
+                <class>My_Reports_Model_Mysql4</class>
+            </my_reports_mysql4>
+        </models>
+        <helpers>
+            <my_reports>
+                <class>My_Reports_Helper</class>
+            </my_reports>
+        </helpers>
+        <blocks>
+            <my_reports>
+                <class>My_Reports_Block</class>
+            </my_reports>
+        </blocks>
+    </global>
+
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <My_Reports before="Mage_Adminhtml">My_Reports_Adminhtml</My_Reports>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+
+    <adminhtml>
+        <layout>
+            <updates>
+                <my_reports>
+                    <file>my_reports.xml</file>
+                </my_reports>
+            </updates>
+        </layout>
+    </adminhtml>
+
+</config>
