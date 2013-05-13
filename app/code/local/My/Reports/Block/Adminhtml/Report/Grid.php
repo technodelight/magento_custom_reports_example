@@ -163,7 +163,7 @@ class My_Reports_Block_Adminhtml_Report_Grid
         $this->addColumn('shipping_rate', array(
             'header'            => Mage::helper('my_reports')->__('Shipping Rate'),
             'index'             => 'shipping_rate',
-            'renderer'          => 'my_reports/adminhtml_report_column_renderer_percent',
+            'renderer'          => 'my_reports/adminhtml_report_grid_column_renderer_percent',
             'decimals'          => 2,
             'total'             => 'avg'
         ));
