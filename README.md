@@ -1,8 +1,8 @@
 # Custom Reports in Magento
 
 
- Because I haven't found any detailed article about how to create a report and how it works, I decided to write
-one myself, where I try to give you some details, not just a plain-code-figure-out-everything-yourself stuff.
+ Because I haven't found any detailed article on how to create a report and how it works, I decided to write
+one myself, and try to give you some details, not just a plain-code-figure-out-everything-yourself stuff.
 The example would be quite simple, but it just fits for an excersice: list the orders grand total and shipping
 amount, and - to give this story a little twist - we would like to display how much percent was the shipping amount of the
 order's total. We would like to display totals too under our grid.
@@ -11,37 +11,37 @@ order's total. We would like to display totals too under our grid.
  - Ability to change date interval (days, months or years)
  - Ability to filter results with a non-zero shipping percent only
  - Ability to export to CSV and MS Excel
- In the example code I would like to use some best practices, and would like to follow the conventions mostly. I
-created a public git repository, from where you could download the whole source code. If you are impatient, scroll to
+ In the example code I would like to use some of the best practices, and to follow the conventions as much as possible. I
+created a public git repository from where you could download the whole source code. If you are impatient, scroll to
 the end of this article for the link.
 
 
-## Shortly about Reports
+## About the Reports in a Nutshell
 
- Basically it consists a grid, a collection and a form, where the form has fields with we can filter the displayed
-results of the grid. The grid displays the collection's items with the applied filters. There is an enermous amount
-of entry points which we could use to change datas during runtime, but we won't use many of them.
+ Basically it consists a grid, a collection and a form, where the form has fields to filter the displayed
+results of the grid. The grid displays the collection's items using the applied filters. There is an enermous amount
+of entry points which we could use to change data during runtime, but we won't use many of them.
 
 
 ## Creating the base module
 
- We will create some blocks, models, helpers for our module, overwrite a controller, define a layout, then
-place the whole into the admin area's menu system. We have to define models because we will use a collection,
+ We will create some blocks, models, helpers for our module, overload a controller, define a layout, then
+place the whole thing into the admin menu. We have to define models because we will use a collection,
 it should have blocks to display the grid and the form, while the helper will handle the translations and it's
 required because we make an admin module. We will place our files under the 'local' codepool, under the `My` vendor
 and the module's name would be `Reports`.
- You can notice some difference while creating a module in the admin area compared to a frontend one. We will overwrite
+ You can notice some difference while creating a module in the admin area compared to a frontend one. We will overload
 the controller under the config's 'admin' node instead of adding a new frontname to the system, also applying the
-layout updates would be in a different node named `adminhtml`. You may wonder about why we won't place it
+layout updates would be in a different node named `adminhtml`. You may wonder why we won't place it
 under the same node as the controller; this could be traced back to legacy reasons. This node is also the place
-for admin menu configuration, but we separate it to a file named after this node (adminhtml.xml). This is
-a feature by Magento, you could separate your module's configuration by the node names used. Usually we do
+for the admin menu configuration, but we separate it into a file named after this node (adminhtml.xml). This is
+a feature of Magento, you could separate your module's configuration by the node names used. Usually we do
 this with system.xml, adminhtml.xml and api.xml/api_v2.xml, depending on needs.
 
 
 ## Configuration files
 
- First of all, we will write our module enabler xml. Because we'll work in the `local` codepool, we should
+ First of all, we will write our module xml. Because we'll work in the `local` codepool, we should
 place all of our files under the `app/code/local` directory.
 
 app/etc/modules/My_Reports.xml
@@ -120,7 +120,7 @@ app/code/local/My/Reports/etc/config.xml
     
     </config>
 
- After that, add our module to the admin menusystem under Report > Sales. Also, we defined some basic ACL rule too, which
+ After that, add our module to the admin menu under Report > Sales. We define some basic ACL rule too, which
 allows every user to operate with our grid.
 
 app/code/local/My/Reports/etc/adminhtml.xml
@@ -202,8 +202,8 @@ app/code/local/My/Reports/Helper/Data.php
 ## Controller
 
  The controller's `_initAction()` and `_initReportAction()` methods could be familiar from the `Mage_Adminhtml_Report_SalesController`.
-We will use this methods to pass the filter values from request in the `indexAction`. The methods starting with 'export' shall
-export our data to the appropriate formats. Luckily we shouldn't have to code the exportation logic ourself, it's already
+In the `indexAction` we will use these methods to pass values from the request object to the filter. The methods starting with 'export' shall
+export our data to the appropriate formats. Luckily we don't have to code the exportation logic ourself, it's already
 implemented by the Magento Team (at least one thing less to do). Because the export is a part of the grid, we have the opportunity
 to export anything what the grid could display.
 
@@ -311,9 +311,8 @@ app/code/local/My/Reports/controllers/Adminhtml/My/ReportsController.php
 
 ## Layout, Grid Container
 
- The `indexAction` supplies our blocks with datas, therefore it's time to start creating them! Let's start right now with the `layout.xml`.
-As you could see, we will need a container block, which would be the place of the grid and the filter form. Probably you have already
-noticed that nothing describes the grid block here, but don't worry, the container should add it later, dynamically.
+ The `indexAction` supplies our blocks with data, therefore it's time to start creating them! Let's start right now with the `layout.xml`.
+As you can see, we will need a container block, which would be the place of the grid and the filter form. Notice that nothing describes the grid block here. Don't worry, the container should add it later, dynamically.
 
 app/design/adminhtml/default/default/layout/my_reports.xml
 
@@ -394,15 +393,15 @@ app/code/local/My/Reports/Block/Adminhtml/Report.php
  The grid connects our backend data and the logic in templates to display everything on the frontend, so it's a 
 bit of both worlds.
 The original sales report grid contains an abstract and a concrete class implementation, but for the purpose
-of easy understanding what we do, we will place everything to only one class.
- The code which deals with displaying datas on the user interface should be prepared in the `_prepareColumns`. Using
+of easy understanding, we will place everything into only one class.
+ The code which deals with displaying data on the user interface should be prepared in the `_prepareColumns`. Using
 the `type` key you can choose one column renderer from the bundled ones (you could find the full list of the renderers
 at `Mage_Adminhtml_Block_Widget_Grid_Column::_getRendererByType()`). However, there isn't one which could handle
-the percent values, therefore we should create one by ourself. The `index` would attach the SQL result's column
+the percent values, therefore we should create one by ourselves. The `index` would attach the SQL result's column
 to the column renderer (you should define the 'alias' here as you defined it in your query in the resource model,
 for example you could see how we specified the `shipping_rate` column).
- The method which deals with supplying datas from the backend is `_prepareCollection()`. Here we pass the values
-from the filters to the collection within the `_addCustomFilter()`.
+ The method which deals with supplying data from the backend is `_prepareCollection()`. Here we pass the values
+from the filters to the collection within the `_addCustomFilter()` method.
 
 app/code/local/My/Reports/Block/Adminhtml/Report/Grid.php
 
@@ -657,13 +656,13 @@ app/code/local/My/Reports/Block/Adminhtml/Report/Grid.php
     
     }
 
- We don't have a renderer to display the percent values yet, that's why we would create one now. Because
+ We don't have a renderer to display the percent values yet, so we have to create it. Because
 every column object inherits from `Varien_Object`, you could pass any value to your column renderer in the
-grid's `_prepareColumns()` method. We will create our renderer with using this capability, but because we
+grid's `_prepareColumns()` method. We will create our renderer by using this capability, but because we
 should have default values, we should wrap the getters within our own methods.
  If you'd like to display the value differently in an export, you have to overwrite the `renderExport()`
 method (by default it returns with the `render()` method's result).
- Also, it's worth to mention that there are two column block types, the one which we would like to create
+ Also, it's worth mentioning that there are two column block types, the one which we would like to create
 now, and an other one which deals with inline filtering on values, placed on the top of the grid (we turned 
 it off this time, see `setFilterVisibility` in the grid class). If you are interested, you could find everything
 in `Mage_Adminhtml_Block_Widget_Grid_Column_Filter_Abstract`.
@@ -968,17 +967,17 @@ app/code/local/My/Reports/Block/Adminhtml/Filter/Form.php
 
 ## Collection
 
- Finally arrived to the point when we will code our last class: the collection. This will
-collect our datas which we would like to display in the grid rows. We should have to write some getters,
-those ones which we already referenced to in the `_addCustomFilter()`. The SQL query building starts
-in the `_initSelect()`. This is originally called from the parent class' constructor, but this
-isn't fits for us this case; because the `isTotals` flag is given after the object has been
-instantiated, we will move the select initialisation to `_beforeLoad()`.
- We shoould define the displayed columns in `_getSelectedColumns()`, based on the `isTotals` flag's
-value. The `_getAggregatedColumns()` builds the SQL query's columns part in totals mode. In the
+ Finally arrived to the point when we will code our last class: the collection. It will
+collect our data which we would like to display in the grid rows. We should have to write some getters,
+those ones which we already referenced to in the `_addCustomFilter()` method. The SQL query building starts
+in the `_initSelect()` method. It is originally called from the parent class' constructor, but it
+isn't fit for us this case, because the `isTotals` flag is set after the object has been
+instantiated, we will move the select initialisation into the `_beforeLoad()` method.
+ We should define the displayed columns in the `_getSelectedColumns()` method based on the `isTotals` flag's
+value. The `_getAggregatedColumns()` method builds the SQL query's columns part in totals mode. In the
 original Sales Report the aggregated columns are prepared in the grid in this format: 
 `'columnId' => '{$total}({$columnId})'`, but I think building queries are the resource model's
-responsibility; therefore I choosed a different realisation (take a look at `_getAggregatedColumn()`).
+responsibility; therefore I chose a different realisation (take a look at the `_getAggregatedColumn()` method).
  If you'd like to debug and see the actual queries, overwrite the `load()` method. The method's two
 parameters explains the functionality behind them. For a little hint you could take a look
 at `Varien_Data_Collection_Db::printLogQuery()`.
@@ -1275,6 +1274,6 @@ app/code/local/My/Reports/Model/Mysql4/Report/Collection.php
 ## Final words
 
  As you could see, it's not rocket science to create a report. However it could be scary at first, but
-I hope I could give you a better overview of the process. Send me a beer if I was able to help you :)
+I hope I could give you a better understanding of the process. Send me a beer if I was able to help you :)
 Comments and opinions are more than welcome.
  The module is available on GitHub: https://github.com/technodelight/magento_custom_reports_example
