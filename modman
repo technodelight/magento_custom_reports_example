@@ -1,0 +1,4 @@
+app/code/local/My/Reports
+app/design/adminhtml/default/default/layout/my_reports.xml
+app/etc/modules/My_Reports.xml
+
