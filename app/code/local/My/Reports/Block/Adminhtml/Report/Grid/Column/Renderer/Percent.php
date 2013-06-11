@@ -1,6 +1,6 @@
 <?php
 
-class My_Reports_Block_Adminhtml_Report_Column_Renderer_Percent
+class My_Reports_Block_Adminhtml_Report_Grid_Column_Renderer_Percent
     extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
 {
     // default (fallback) values, if not specified from outside
