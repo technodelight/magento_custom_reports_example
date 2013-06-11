@@ -220,7 +220,9 @@ app/code/local/My/Reports/controllers/Adminhtml/My/ReportsController.php
          */
         protected function _initAction()
         {
-            $this->_title($this->__('Reports'))->_title($this->__('Sales'))->_title($this->__('My Custom Reports'));
+            $this->_title($this->__('Reports'))
+                ->_title($this->__('Sales'))
+                ->_title($this->__('My Custom Reports'));
             $this->loadLayout()
                 ->_setActiveMenu('report/sales')
                 ->_addBreadcrumb(Mage::helper('my_reports')->__('Reports'), Mage::helper('my_reports')->__('Reports'))
@@ -239,9 +241,9 @@ app/code/local/My/Reports/controllers/Adminhtml/My/ReportsController.php
                 $blocks = array($blocks);
             }
      
-            $requestData    = Mage::helper('adminhtml')->prepareFilterString($this->getRequest()->getParam('filter'));
-            $requestData    = $this->_filterDates($requestData, array('from', 'to'));
-            $params         = $this->_getDefaultFilterData();
+            $requestData = Mage::helper('adminhtml')->prepareFilterString($this->getRequest()->getParam('filter'));
+            $requestData = $this->_filterDates($requestData, array('from', 'to'));
+            $params = $this->_getDefaultFilterData();
             foreach ($requestData as $key => $value) {
                 if (!empty($value)) {
                     $params->setData($key, $value);
@@ -278,8 +280,8 @@ app/code/local/My/Reports/controllers/Adminhtml/My/ReportsController.php
          */
         public function exportCsvAction()
         {
-            $fileName   = 'my_reports.csv';
-            $grid       = $this->getLayout()->createBlock('my_reports/adminhtml_report_grid');
+            $fileName = 'my_reports.csv';
+            $grid = $this->getLayout()->createBlock('my_reports/adminhtml_report_grid');
             $this->_initReportAction($grid);
             $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
         }
@@ -289,8 +291,8 @@ app/code/local/My/Reports/controllers/Adminhtml/My/ReportsController.php
          */
         public function exportExcelAction()
         {
-            $fileName   = 'my_reports.xml';
-            $grid       = $this->getLayout()->createBlock('my_reports/adminhtml_report_grid');
+            $fileName = 'my_reports.xml';
+            $grid = $this->getLayout()->createBlock('my_reports/adminhtml_report_grid');
             $this->_initReportAction($grid);
             $this->_prepareDownloadResponse($fileName, $grid->getExcelFile());
         }
@@ -302,8 +304,8 @@ app/code/local/My/Reports/controllers/Adminhtml/My/ReportsController.php
         protected function _getDefaultFilterData()
         {
             return new Varien_Object(array(
-                'from'      => date('Y-m-d G:i:s', strtotime('-1 month -1 day')),
-                'to'        => date('Y-m-d G:i:s', strtotime('-1 day'))
+                'from' => date('Y-m-d G:i:s', strtotime('-1 month -1 day')),
+                'to' => date('Y-m-d G:i:s', strtotime('-1 day'))
             ));
         }
     }
@@ -342,11 +344,12 @@ app/code/local/My/Reports/Block/Adminhtml/Report.php
         /**
          * This is your module alias
          */
-        protected $_blockGroup      = 'my_reports';
+        protected $_blockGroup = 'my_reports';
+
         /**
          * This is the controller's name (this block)
          */
-        protected $_controller      = 'adminhtml_report';
+        protected $_controller = 'adminhtml_report';
     
         /*
             Note: the grid block's name would prepare from $_blockGroup and $_controller with the suffix '_grid'.
@@ -371,8 +374,8 @@ app/code/local/My/Reports/Block/Adminhtml/Report.php
     
             // add a button to our form to let the user kick-off our logic from the admin
             $this->addButton('filter_form_submit', array(
-                'label'     => Mage::helper('my_reports')->__('Show Report'),
-                'onclick'   => 'filterFormSubmit()'
+                'label' => Mage::helper('my_reports')->__('Show Report'),
+                'onclick' => 'filterFormSubmit()'
             ));
         }
     
@@ -416,7 +419,7 @@ app/code/local/My/Reports/Block/Adminhtml/Report/Grid.php
          * Grouped class name of used collection by this grid
          * @var string
          */
-        protected $_resourceCollectionName      = 'my_reports/report_collection';
+        protected $_resourceCollectionName = 'my_reports/report_collection';
     
         /**
          * List of columns to aggregate by
@@ -440,7 +443,7 @@ app/code/local/My/Reports/Block/Adminhtml/Report/Grid.php
             $this->setEmptyCellLabel(Mage::helper('my_reports')->__('No records found.'));
     
             // set grid ID in adminhtml
-            $this->setId('mxReportsGrid');
+            $this->setId('myReportsGrid');
     
             // set our grid to obtain totals
             $this->setCountTotals(true);
@@ -494,10 +497,10 @@ app/code/local/My/Reports/Block/Adminhtml/Report/Grid.php
          */
         public function getTotals()
         {
-            $result                 = parent::getTotals();
+            $result = parent::getTotals();
             if (!$result && $this->getCountTotals()) {
-                $filterData         = $this->getFilterData();
-                $totalsCollection   = $this->getResourceCollection();
+                $filterData = $this->getFilterData();
+                $totalsCollection = $this->getResourceCollection();
                 
                 // apply our custom filters on collection
                 $this->_addCustomFilter(
@@ -531,48 +534,48 @@ app/code/local/My/Reports/Block/Adminhtml/Report/Grid.php
         {
             // get currency code and currency rate for the currency renderers.
             // our orders could be in different currencies, therefore we should convert the values to the base currency
-            $currencyCode           = $this->getCurrentCurrencyCode();
-            $rate                   = $this->getRate($currencyCode);
+            $currencyCode = $this->getCurrentCurrencyCode();
+            $rate = $this->getRate($currencyCode);
     
             // add our first column, period which represents a date
             $this->addColumn('period', array(
-                'header'            => Mage::helper('my_reports')->__('Period'),
-                'index'             => 'created_at', // 'index' attaches a column from the SQL result set to the grid
-                'renderer'          => 'adminhtml/report_sales_grid_column_renderer_date',
-                'width'             => 100,
-                'sortable'          => false,
-                'period_type'       => $this->getFilterData()->getPeriodType() // could be day, month or year
+                'header' => Mage::helper('my_reports')->__('Period'),
+                'index' => 'created_at', // 'index' attaches a column from the SQL result set to the grid
+                'renderer' => 'adminhtml/report_sales_grid_column_renderer_date',
+                'width' => 100,
+                'sortable' => false,
+                'period_type' => $this->getFilterData()->getPeriodType() // could be day, month or year
             ));
     
             // add base grand total w/ a currency renderer, and add totals
             $this->addColumn('base_grand_total', array(
-                'header'            => Mage::helper('my_reports')->__('Grand Total'),
-                'index'             => 'base_grand_total',
+                'header' => Mage::helper('my_reports')->__('Grand Total'),
+                'index' => 'base_grand_total',
                 // type defines a grid column renderer; you could find the complete list 
                 // and the exact aliases at Mage_Adminhtml_Block_Widget_Grid_Column::_getRendererByType()
-                'type'              => 'currency',
-                'currency_code'     => $currencyCode, // set currency code..
-                'rate'              => $rate, // and currency rate, used by the column renderer
-                'total'             => 'sum'
+                'type' => 'currency',
+                'currency_code' => $currencyCode, // set currency code..
+                'rate' => $rate, // and currency rate, used by the column renderer
+                'total' => 'sum'
             ));
     
             // add the next column shipping_amount, with an average on totals
             $this->addColumn('base_shipping_amount', array(
-                'header'            => Mage::helper('my_reports')->__('Shipping Amount'),
-                'index'             => 'base_shipping_amount',
-                'type'              => 'currency',
-                'currency_code'     => $currencyCode,
-                'rate'              => $rate,
-                'total'             => 'sum'
+                'header' => Mage::helper('my_reports')->__('Shipping Amount'),
+                'index' => 'base_shipping_amount',
+                'type' => 'currency',
+                'currency_code' => $currencyCode,
+                'rate' => $rate,
+                'total' => 'sum'
             ));
     
             // rate, where base_shipping_amount/base_grand_total is a percent
             $this->addColumn('shipping_rate', array(
-                'header'            => Mage::helper('my_reports')->__('Shipping Rate'),
-                'index'             => 'shipping_rate',
-                'renderer'          => 'my_reports/adminhtml_report_grid_column_renderer_percent',
-                'decimals'          => 2,
-                'total'             => 'avg'
+                'header' => Mage::helper('my_reports')->__('Shipping Rate'),
+                'index' => 'shipping_rate',
+                'renderer' => 'my_reports/adminhtml_report_grid_column_renderer_percent',
+                'decimals' => 2,
+                'total' => 'avg'
             ));
     
             // add export types
@@ -590,8 +593,8 @@ app/code/local/My/Reports/Block/Adminhtml/Report/Grid.php
          */
         protected function _prepareCollection()
         {
-            $filterData             = $this->getFilterData();
-            $resourceCollection     = $this->getResourceCollection();
+            $filterData = $this->getFilterData();
+            $resourceCollection = $this->getResourceCollection();
     
             // get our resource collection and apply our filters on it
             $this->_addCustomFilter(
@@ -680,13 +683,8 @@ app/code/local/My/Reports/Block/Adminhtml/Report/Grid/Column/Renderer/Percent.ph
          * Default value for rounding value by
          * @var int
          */
-        const DECIMALS                  = 2;
-    
-        /**
-         * Percent sign, appended to the value
-         */
-        const PERCENT_SIGN              = '%';
-    
+        const DECIMALS = 2;
+
         // render the field
     
         /**
@@ -698,22 +696,11 @@ app/code/local/My/Reports/Block/Adminhtml/Report/Grid/Column/Renderer/Percent.ph
         {
             $value          = $this->_getValue($row);
             $decimals       = $this->_getDecimals();
-            return number_format($value, $decimals) . self::PERCENT_SIGN;
+            return number_format($value, $decimals) . '%';
         }
     
         // add getter for decimals
-    
-        /*
-          Note: as many objects in Magento, also the renderers inherit methods from Varien_Object
-          (actually the renderer is a block, and all block inherits from Varien_Object).
-          Therefore we could pass any value to this block using Varien_Object's methods.
-          For example $renderer->setAnything(1) will set the 'anything''s value to 1. In our case
-          we pass the decimals with a value of 2 when we add the 'shipping_rate' column to the grid
-          (because the default is 2 this is not necessary, but the code is easier to understand 
-          and read this way).
-          See: Varien_Object (especially ::__call), My_Reports_Block_Adminhtml_Report_Grid::_prepareColumns().
-         */
-    
+
         /**
          * Get decimal to round value by
          * The decimals value could be changed with specifying it from outside using
@@ -748,13 +735,13 @@ app/code/local/My/Reports/Block/Adminhtml/Filter/Form.php
          * This will contain our form element's visibility
          * @var array
          */
-        protected $_fieldVisibility             = array();
+        protected $_fieldVisibility = array();
     
         /**
          * Field options
          * @var array
          */
-        protected $_fieldOptions                = array();
+        protected $_fieldOptions = array();
     
         /**
          * Sets a form element to be visible or not
@@ -794,9 +781,9 @@ app/code/local/My/Reports/Block/Adminhtml/Filter/Form.php
         public function setFieldOption($fieldId, $option, $value = null)
         {
             if (is_array($option)) {
-                $options    = $option;
+                $options = $option;
             } else {
-                $options    = array($option => $value);
+                $options = array($option => $value);
             }
     
             if (!isset($this->_fieldOptions[$fieldId])) {
@@ -817,49 +804,56 @@ app/code/local/My/Reports/Block/Adminhtml/Filter/Form.php
         protected function _prepareForm()
         {
             // inicialise our form
-            $actionUrl      = $this->getCurrentUrl();
-            $form           = new Varien_Data_Form(array(
-                'id'        => 'filter_form',
-                'action'    => $actionUrl, 
-                'method'    => 'get'
+            $actionUrl = $this->getCurrentUrl();
+            $form = new Varien_Data_Form(array(
+                'id' => 'filter_form',
+                'action' => $actionUrl, 
+                'method' => 'get'
             ));
     
             // set ID prefix for all elements in our form
-            $htmlIdPrefix   = 'my_reports_';
+            $htmlIdPrefix = 'my_reports_';
             $form->setHtmlIdPrefix($htmlIdPrefix);
     
             // create a fieldset to add elements to
-            $fieldset       = $form->addFieldset('base_fieldset', array('legend' => Mage::helper('my_reports')->__('Filter')));
+            $fieldset = $form->addFieldset(
+                'base_fieldset',
+                array(
+                    'legend' => Mage::helper('my_reports')->__('Filter')
+                )
+            );
     
             // prepare our filter fields and add each to the fieldset
     
             // date filter
-            $dateFormatIso  = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
+            $dateFormatIso  = Mage::app()
+                ->getLocale()
+                ->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
             $fieldset->addField('from', 'date', array(
-                'name'      => 'from',
-                'format'    => $dateFormatIso,
-                'image'     => $this->getSkinUrl('images/grid-cal.gif'),
-                'label'     => Mage::helper('my_reports')->__('From'),
-                'title'     => Mage::helper('my_reports')->__('From')
+                'name' => 'from',
+                'format' => $dateFormatIso,
+                'image' => $this->getSkinUrl('images/grid-cal.gif'),
+                'label' => Mage::helper('my_reports')->__('From'),
+                'title' => Mage::helper('my_reports')->__('From')
             ));
             $fieldset->addField('to', 'date', array(
-                'name'      => 'to',
-                'format'    => $dateFormatIso,
-                'image'     => $this->getSkinUrl('images/grid-cal.gif'),
-                'label'     => Mage::helper('my_reports')->__('To'),
-                'title'     => Mage::helper('my_reports')->__('To')
+                'name' => 'to',
+                'format' => $dateFormatIso,
+                'image' => $this->getSkinUrl('images/grid-cal.gif'),
+                'label' => Mage::helper('my_reports')->__('To'),
+                'title' => Mage::helper('my_reports')->__('To')
             ));
             $fieldset->addField('period_type', 'select', array(
-                'name'      => 'period_type',
-                'options'   => $this->_getPeriodTypeOptions(),
-                'label'     => Mage::helper('my_reports')->__('Period')
+                'name' => 'period_type',
+                'options' => $this->_getPeriodTypeOptions(),
+                'label' => Mage::helper('my_reports')->__('Period')
             ));
     
             // non-zero shipping rate filter
             $fieldset->addField('shipping_rate', 'select', array(
-                'name'      => 'shipping_rate',
-                'options'   => $this->_getShippingRateSelectOptions(),
-                'label'     => Mage::helper('my_reports')->__('Show values where shipping rate greater than 0')
+                'name' => 'shipping_rate',
+                'options' => $this->_getShippingRateSelectOptions(),
+                'label' => Mage::helper('my_reports')->__('Show values where shipping rate greater than 0')
             ));
     
             $form->setUseContainer(true);
@@ -874,10 +868,10 @@ app/code/local/My/Reports/Block/Adminhtml/Filter/Form.php
          */
         protected function _getPeriodTypeOptions()
         {
-            $options        = array(
-                'day'       => Mage::helper('my_reports')->__('Day'),
-                'month'     => Mage::helper('my_reports')->__('Month'),
-                'year'      => Mage::helper('my_reports')->__('Year'),
+            $options = array(
+                'day' => Mage::helper('my_reports')->__('Day'),
+                'month' => Mage::helper('my_reports')->__('Month'),
+                'year' => Mage::helper('my_reports')->__('Year'),
             );
     
             return $options;
@@ -889,9 +883,9 @@ app/code/local/My/Reports/Block/Adminhtml/Filter/Form.php
          */
         protected function _getShippingRateSelectOptions()
         {
-            $options        = array(
-                '0'         => 'Any',
-                '1'         => 'Specified'
+            $options = array(
+                '0' => 'Any',
+                '1' => 'Specified'
             );
     
             return $options;
@@ -904,7 +898,7 @@ app/code/local/My/Reports/Block/Adminhtml/Filter/Form.php
          */
         protected function _initFormValues()
         {
-            $filterData     = $this->getFilterData();
+            $filterData = $this->getFilterData();
             $this->getForm()->addValues($filterData->getData());
             return parent::_initFormValues();
         }
@@ -915,9 +909,9 @@ app/code/local/My/Reports/Block/Adminhtml/Filter/Form.php
          */
         protected function _beforeHtml()
         {
-            $result         = parent::_beforeHtml();
+            $result = parent::_beforeHtml();
     
-            $elements       = $this->getForm()->getElements();
+            $elements = $this->getForm()->getElements();
     
             // iterate on our elements and select fieldsets
             foreach ($elements as $element) {
@@ -1014,20 +1008,20 @@ app/code/local/My/Reports/Model/Mysql4/Report/Collection.php
          * Filter only results where shipping rate is greater than zero
          * @var bool
          */
-        protected $_isShippingRateNonZeroOnly       = false;
+        protected $_isShippingRateNonZeroOnly = false;
     
         /**
          * Count totals (aggregated columns) only
          * @var bool
          */
-        protected $_isTotals                        = false;
+        protected $_isTotals = false;
     
         /**
          * Aggregated columns to count totals
          * In the format of: 'columnId' => 'total'
          * @var array
          */
-        protected $_aggregatedColumns               = array();
+        protected $_aggregatedColumns = array();
     
         // define basic setup of our collection
     
@@ -1119,14 +1113,14 @@ app/code/local/My/Reports/Model/Mysql4/Report/Collection.php
          */
         protected function _getSelectedColumns() {
             if ($this->isTotals()) {
-                $selectedColumns            = $this->_getAggregatedColumns();
+                $selectedColumns = $this->_getAggregatedColumns();
             } else {
-                $selectedColumns            = array(
-                    'created_at'            => $this->_getPeriodFormat(),
-                    'base_grand_total'      => 'SUM(base_grand_total)',
-                    'base_shipping_amount'  => 'SUM(base_shipping_amount)',
-                    'shipping_rate'         => 'AVG((base_shipping_amount / base_grand_total) * 100)',
-                    'base_currency_code'    => 'base_currency_code',
+                $selectedColumns = array(
+                    'created_at' => $this->_getPeriodFormat(),
+                    'base_grand_total' => 'SUM(base_grand_total)',
+                    'base_shipping_amount' => 'SUM(base_shipping_amount)',
+                    'shipping_rate' => 'AVG((base_shipping_amount / base_grand_total) * 100)',
+                    'base_currency_code' => 'base_currency_code',
                 );
             }
     
@@ -1140,7 +1134,7 @@ app/code/local/My/Reports/Model/Mysql4/Report/Collection.php
          */
         protected function _getAggregatedColumns()
         {
-            $aggregatedColumns          = array();
+            $aggregatedColumns = array();
             foreach ($this->_aggregatedColumns as $columnId => $total) {
                 $aggregatedColumns[$columnId] = $this->_getAggregatedColumn($columnId, $total);
             }
@@ -1157,10 +1151,10 @@ app/code/local/My/Reports/Model/Mysql4/Report/Collection.php
         {
             switch ($columnId) {
                 case 'shipping_rate' : {
-                    $expression         = "{$total}((base_shipping_amount / base_grand_total) * 100)";
+                    $expression = "{$total}((base_shipping_amount / base_grand_total) * 100)";
                 } break;
                 default : {
-                    $expression         = "{$total}({$columnId})";
+                    $expression = "{$total}({$columnId})";
                 } break;
             }
     
